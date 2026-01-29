@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+// watch list item enum 
+enum watchlistItemStatus {
+  TO_WATCH
+  WATCHING
+  WATCHED
+}
+
+// USER MODEL 
+model User {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+
+  // relationships
+  movies Movie[] @relation("MovieCreator")
+  watchlistItems watchlistItem[]
+}
+
+// MOVIE MODEL 
+model Movie{
+  id String @id @default(uuid())
+  title String
+  overview String?
+  releaseYear Int
+  genres String[] @default([])
+  runtime Int?
+  posterUrl String?
+  createdBy String
+  createdAt DateTime @default(now())
+
+  // Relationships
+  creator User @relation( "MovieCreator",fields: [createdBy], references: [id], onDelete: Cascade)
+  watchlistItems watchlistItem[]
+}
+
+// WATCHES MODEL
+model watchlistItem {
+  id String @id @default(uuid())
+  userId String
+  movieId String
+  status watchlistItemStatus @default(TO_WATCH)
+  rating Int?
+  review String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // Relationships 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
