@@ -1,0 +1,2 @@
+
+const addToWatchList = (req, res) => 
