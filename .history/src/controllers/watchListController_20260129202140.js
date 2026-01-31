@@ -74,35 +74,7 @@ const updateWatchListItem = async (req, res) => {
     const watchlistItemId = req.params.id;
     const userId = req.user.id;
 
-    // Find watchlistItemId and verify ownership 
-    const watchlistItem = await prisma.watchlistItem.findUnique({
-        where: { id: watchlistItemId },
-    });
-
-    if (!watchlistItem || watchlistItem.userId !== userId) {
-        return res.status(404).json({ error: "Watchlist item not found" });
-    }
-
-    // ensuring only oweners are allowed to update 
-   if(watchlistItem.userId !== userId){
-        return res.status(403).json({ error: "Forbidden: You do not have permission to update this item." });
-   }
-
-    // Update the watchlist item
-    const updatedItem = await prisma.watchlistItem.update({
-          where: { id: watchlistItemId },
-          data: {
-                status: status || watchlistItem.status,
-                rating: rating !== undefined ? rating : watchlistItem.rating,
-                review: review !== undefined ? review : watchlistItem.review,
-          },
-    });
-
-    res.status(200).json({ 
-        message: "Watchlist item updated successfully", 
-        watchlistItem: updatedItem 
-    });
-
+    Find watchlistItemId and verify 
 }
 
 const removeFromWatchList = async (req, res) => {
@@ -135,4 +107,4 @@ const removeFromWatchList = async (req, res) => {
     }
 };
 
-export { addToWatchList, removeFromWatchList, updateWatchListItem };
+export { addToWatchList, removeFromWatchList };

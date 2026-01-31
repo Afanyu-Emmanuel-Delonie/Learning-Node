@@ -68,47 +68,10 @@ const addToWatchList = async (req, res) => {
     }
 };
 
-const updateWatchListItem = async (req, res) => {
-    // This function can be implemented to update status, rating, or review of a watchlist item
-    const { status, rating, review } = req.body;
-    const watchlistItemId = req.params.id;
-    const userId = req.user.id;
-
-    // Find watchlistItemId and verify ownership 
-    const watchlistItem = await prisma.watchlistItem.findUnique({
-        where: { id: watchlistItemId },
-    });
-
-    if (!watchlistItem || watchlistItem.userId !== userId) {
-        return res.status(404).json({ error: "Watchlist item not found" });
-    }
-
-    // ensuring only oweners are allowed to update 
-   if(watchlistItem.userId !== userId){
-        return res.status(403).json({ error: "Forbidden: You do not have permission to update this item." });
-   }
-
-    // Update the watchlist item
-    const updatedItem = await prisma.watchlistItem.update({
-          where: { id: watchlistItemId },
-          data: {
-                status: status || watchlistItem.status,
-                rating: rating !== undefined ? rating : watchlistItem.rating,
-                review: review !== undefined ? review : watchlistItem.review,
-          },
-    });
-
-    res.status(200).json({ 
-        message: "Watchlist item updated successfully", 
-        watchlistItem: updatedItem 
-    });
-
-}
-
 const removeFromWatchList = async (req, res) => {
     try {
-        const watchlistItemId = req.params.id;
-        const userId = req.user.id; 
+        const watchlistItemId = parseInt(req.params.id);
+        const userId = req.user.id; // Get userId from authenticated user
 
         // Verify that watchlist item exists and belongs to the user
         const watchlistItem = await prisma.watchlistItem.findUnique({
@@ -133,6 +96,5 @@ const removeFromWatchList = async (req, res) => {
             details: error.message 
         });
     }
-};
 
-export { addToWatchList, removeFromWatchList, updateWatchListItem };
+export { addToWatchList };

@@ -135,4 +135,4 @@ const removeFromWatchList = async (req, res) => {
     }
 };
 
-export { addToWatchList, removeFromWatchList, updateWatchListItem };
+export { addToWatchList, removeFromWatchList,  };

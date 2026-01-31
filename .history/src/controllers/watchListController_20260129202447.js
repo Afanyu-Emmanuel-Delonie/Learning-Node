@@ -97,12 +97,6 @@ const updateWatchListItem = async (req, res) => {
                 review: review !== undefined ? review : watchlistItem.review,
           },
     });
-
-    res.status(200).json({ 
-        message: "Watchlist item updated successfully", 
-        watchlistItem: updatedItem 
-    });
-
 }
 
 const removeFromWatchList = async (req, res) => {
@@ -135,4 +129,4 @@ const removeFromWatchList = async (req, res) => {
     }
 };
 
-export { addToWatchList, removeFromWatchList, updateWatchListItem };
+export { addToWatchList, removeFromWatchList };
